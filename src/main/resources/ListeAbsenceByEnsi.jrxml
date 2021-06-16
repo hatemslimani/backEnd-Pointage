@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.9.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" whenNoDataType="AllSectionsNoDetail" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ListeAbsences" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2e2f3ebf-38a0-413e-a8e7-a7e8a62215d2">
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+    <parameter name="dateDebut" class="java.lang.String">
+    </parameter>
+    <parameter name="dateFin" class="java.lang.String">
+    </parameter>
+    <parameter name="nbAbsence" class="java.lang.Integer">
+    </parameter>
+    <parameter name="nom" class="java.lang.String">
+    </parameter>
+    <field name="dateAbsencee" class="java.lang.String">
+    </field>
+    <field name="nomSeance" class="java.lang.String">
+    </field>
+    <field name="nomNivean" class="java.lang.String">
+    </field>
+    <background>
+        <band/>
+    </background>
+    <title>
+        <band height="199">
+            <frame>
+                <reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#07527D" uuid="6c471ea7-8171-4f7d-9a23-5da4074ac355"/>
+                <staticText>
+                    <reportElement x="120" y="25" width="354" height="55" forecolor="#FFFFFF" uuid="15a8fdc5-ca53-425a-9da0-4e28439d2862"/>
+                    <textElement textAlignment="Center">
+                        <font size="34" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Liste des Absences]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="0" y="5" width="131" height="20" forecolor="#FFFFFF" uuid="e21eb80a-31a7-4897-a777-f2046d1dc07f"/>
+                    <textElement textAlignment="Center">
+                        <font size="14" isBold="false"/>
+                    </textElement>
+                    <text><![CDATA[ISET Sfax]]></text>
+                </staticText>
+                <textField pattern="EEEEE dd MMMMM yyyy">
+                    <reportElement x="489" y="5" width="100" height="13" forecolor="#FFFFFF" uuid="1815990f-1742-498b-bc91-4cbcf629ddd8"/>
+                    <textElement textAlignment="Center"/>
+                    <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+                </textField>
+            </frame>
+            <frame>
+                <reportElement mode="Opaque" x="0" y="90" width="555" height="100" backcolor="#EBEBEB" uuid="869dd32c-8ecf-4631-80fc-a466967513a2"/>
+                <staticText>
+                    <reportElement x="10" y="15" width="160" height="20" forecolor="#000000" backcolor="#000000" uuid="6ccd30dd-2c2b-4968-9573-3b8602673a82"/>
+                    <textElement textAlignment="Left">
+                        <font size="14" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Date]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="10" y="70" width="180" height="18" forecolor="#050201" uuid="0bd4e5ba-c97f-4a9b-9720-1457e45b803a"/>
+                    <textElement textAlignment="Left">
+                        <font size="14" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Nomber des absences]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="201" y="72" width="100" height="18" uuid="8e11cfa4-e47b-491c-92ed-015f3507d014"/>
+                    <textElement verticalAlignment="Middle">
+                        <font size="14"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{nbAbsence}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="177" y="15" width="80" height="19" uuid="e1f0a963-d0d0-4c9d-bd69-d3c04873671a"/>
+                    <textElement textAlignment="Center">
+                        <font size="14"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{dateDebut}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="257" y="15" width="20" height="20" forecolor="#000000" backcolor="#000000" uuid="57904c8b-2dc5-4f93-8df0-1a83d01d191d"/>
+                    <textElement textAlignment="Center">
+                        <font size="14" isBold="false"/>
+                    </textElement>
+                    <text><![CDATA[à]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="278" y="15" width="100" height="20" uuid="0d62d37e-08dd-479c-81b0-d129467707b4"/>
+                    <textElement textAlignment="Left">
+                        <font size="14"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{dateFin}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="10" y="43" width="180" height="18" forecolor="#050201" uuid="50174d46-7ab3-4d5b-862a-d93644d009b1"/>
+                    <textElement textAlignment="Left">
+                        <font size="14" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Nom]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="201" y="45" width="100" height="18" uuid="b6e6061d-12fe-4a61-878a-f57136f01ff8"/>
+                    <textElement verticalAlignment="Middle">
+                        <font size="14"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{nom}]]></textFieldExpression>
+                </textField>
+            </frame>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="25">
+            <line>
+                <reportElement x="47" y="20" width="461" height="1" forecolor="#666666" uuid="5fc9f33f-550f-4e8c-a86e-5f2ca3b5c9d2"/>
+            </line>
+            <staticText>
+                <reportElement mode="Opaque" x="47" y="0" width="50" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="e01c2dcd-7c2d-4f74-8c41-46ce8ca55c3e">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e3a7df18-2861-4331-9f10-f7f6abea14a9"/>
+                </reportElement>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[#]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="97" y="0" width="140" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="8e6d270b-e40b-4333-a400-d8a48133f76e">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="44d1b3a8-3013-45b3-bf07-bf273beaa88d"/>
+                </reportElement>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[DATE ABSENCE]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="236" y="0" width="140" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="e3cc1f5a-1ce2-491e-beaa-711390c4b486">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e3dc0c3b-15f0-440e-a0c9-41fd6a3aed83"/>
+                </reportElement>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[GROUPE]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="377" y="0" width="131" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="5a131426-636c-46e8-b44e-bf70bc62e74f">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="29f37940-72ed-460a-b291-c12784fb0a3c"/>
+                </reportElement>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[SEANCE]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="23">
+            <line>
+                <reportElement positionType="FixRelativeToBottom" x="47" y="15" width="461" height="1" uuid="b585d100-efd6-4efd-b5af-4019bfdd56f2"/>
+            </line>
+            <textField>
+                <reportElement x="97" y="-5" width="140" height="20" uuid="0d538cc7-0f08-4847-9545-69a8d19c8f99">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="44d1b3a8-3013-45b3-bf07-bf273beaa88d"/>
+                </reportElement>
+                <textElement textAlignment="Center">
+                    <font size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{dateAbsencee}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="236" y="-5" width="140" height="20" uuid="b5383df2-bcb3-4fe2-b5ea-4e916f160a93">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e3dc0c3b-15f0-440e-a0c9-41fd6a3aed83"/>
+                </reportElement>
+                <textElement textAlignment="Center">
+                    <font size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{nomNivean}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="377" y="-5" width="131" height="20" uuid="a8a8a22c-615d-4ea9-a152-21ccd521b080">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="29f37940-72ed-460a-b291-c12784fb0a3c"/>
+                </reportElement>
+                <textElement textAlignment="Center">
+                    <font size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{nomSeance}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="47" y="-5" width="50" height="20" isPrintInFirstWholeBand="true" uuid="c0280e46-731a-46f4-ac46-7c0c02691846"/>
+                <textElement textAlignment="Center">
+                    <font size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{COLUMN_COUNT}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <columnFooter>
+        <band/>
+    </columnFooter>
+    <pageFooter>
+        <band height="17">
+            <textField>
+                <reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="4370b7be-dd84-4d90-bc8b-3cd60e15aa2b"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="ee0a01fa-eca6-4faa-b862-2f1a3b2b52ba"/>
+                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <textField pattern="EEEEE dd MMMMM yyyy">
+                <reportElement x="0" y="4" width="100" height="13" uuid="9e75594b-85c8-4cfb-ae14-4609fd452819"/>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+    <summary>
+        <band/>
+    </summary>
+</jasperReport>

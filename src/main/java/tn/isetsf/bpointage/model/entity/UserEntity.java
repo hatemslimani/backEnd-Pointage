@@ -16,4 +16,17 @@ public class UserEntity {
     private String role;
     private String departement;
     private String  newPassword;
+    private String token;
+    private int idEnseignant;
+    private int idDepartementt;
+    private Boolean firstLogin;
+
+    public UserEntity(String nom, String prenom, String userName, String role, String token,Boolean firstLogin) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.userName = userName;
+        this.role = role;
+        this.token = token;
+        this.firstLogin=firstLogin;
+    }
 }

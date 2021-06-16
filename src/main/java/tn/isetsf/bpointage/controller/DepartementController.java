@@ -82,5 +82,38 @@ public class DepartementController {
         etageService.deleteEtage(etage);
         throw new ResponseStatusException(HttpStatus.OK,"supprimer avec success");
     }
-
+    @GetMapping("/etage/{idEtage}")
+    public Etage getEtagebyId(@PathVariable int idEtage)
+    {
+        EtageModel etage=etageService.getEtageById(idEtage);
+        if (etage==null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Etage non trouvé");
+        }
+        Etage e=new Etage();
+        e.setNomEtage(etage.getNomEtage());
+        e.setIdEtage(etage.getId());
+        e.setIdBlock(etage.getBlock().getId());
+        e.setSalles(etage.getSalles());
+        return e;
+    }
+    @PostMapping("/editEtage")
+    public void editEtage(@RequestBody Etage e)
+    {
+        EtageModel etage=etageService.getEtageById(e.getIdEtage());
+        if (etage==null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Etage non trouvé");
+        }
+        etage.setNomEtage(e.getNomEtage());
+        etage.setBlock(blockService.getBlock(e.getIdBlock()));
+        etage.setSalles(e.getSalles());
+        etageService.editEtage(etage);
+        throw new ResponseStatusException(HttpStatus.OK,"Etage modifier");
+    }
+    @GetMapping("/notResponsable")
+    public List<DepartementModel>getdepartementNotResponsable()
+    {
+        return departementService.getdepartementNotResponsable();
+    }
 }

@@ -2,6 +2,8 @@ package tn.isetsf.bpointage.config;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import tn.isetsf.bpointage.filter.JwtFilter;
 import tn.isetsf.bpointage.service.MySql.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,23 +19,40 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final String[] endPoint={
-            "/authenticate",
+            "user/authenticate"
+    };
+    private final String[] endPointAdmin={
             "/createUser",
-            "/auth/**",
-            "/user/**",
+            //"/auth/**", "/user/createUser", "/user/getUsers", "/user/deleteUser","/user/updatePassword",
             "/departement/**",
             "/block/**",
             "/salle/**",
-            "/ensiegnant/**",
+
+            "/ensiegnement/**",
+            "/group/**",
+
+    };
+    private final String[] endPointResponsable={
+           // "/auth/**", "/user/**",
+            //"/departement/**",
+            "/salle/**",
+
             "/ensiegnement/**",
             "/group/**",
             "/gestionPre/**",
-            "/calendar/**",
-            "/pointage/**"
+
+    };
+    private final String[] endPointController={
+            "/pointage/**",
+    };
+    private final String[] endPointEnseignant={
+            "/enseignant/**"
     };
     @Autowired
     private UserService userDetailsService;
@@ -59,14 +78,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().antMatchers(endPoint)
-                .permitAll().
-                antMatchers(HttpMethod.GET,"/testt/").hasAnyRole("ADMIN").
-                antMatchers(HttpMethod.GET,"/testt/controller").hasAnyRole("CONTROLLER").
+        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/user/authenticate","/enseignant/**","/calendar/**","/ensiegnant/**","/pointage/**","/statistic/**","/certificat/**").permitAll().
+                antMatchers(endPointAdmin).hasAnyRole("ADMIN").
+                antMatchers(endPointResponsable).hasAnyRole("RESPONSABLE").
+                antMatchers(endPointEnseignant).hasAnyRole("ENSEIGNANT").
+               // antMatchers(endPointController).hasAnyRole("CONTROLLER").
+                antMatchers("/report/**").hasAnyRole("RESPONSABLE","ADMIN").
+                antMatchers("/notification/**").hasAnyRole("RESPONSABLE","ADMIN","ENSEIGNANT").
                 anyRequest().authenticated().
                 and().exceptionHandling().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        //.antMatchers("/").hasAnyRole("ADMIN")
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);;
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("http://localhost:4200","http://localhost:8100");
+            }
+        };
     }
 }

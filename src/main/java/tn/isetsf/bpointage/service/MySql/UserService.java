@@ -55,6 +55,7 @@ public class UserService implements UserDetailsService {
         if (!u.equals(null))
         {
             u.setPassword(passwordEncoder().encode(user.getPassword()));
+            u.setFirstLogin(false);
             repository.save(u);
         }
         return u;
@@ -70,5 +71,17 @@ public class UserService implements UserDetailsService {
     public User updateUser(User u)
     {
         return repository.save(u);
+    }
+    public User getEnseignant(int idEnsei)
+    {
+        return repository.getEnseigant(idEnsei);
+    }
+    public User getResponsableByDepartement(int iddep)
+    {
+        return repository.getResponsableByDepartement(iddep);
+    }
+
+    public User getAdmin() {
+        return repository.getAdmin();
     }
 }

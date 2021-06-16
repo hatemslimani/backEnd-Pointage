@@ -61,6 +61,7 @@ public class PointageController {
         this.calendar = Calendar.getInstance();
         calendar.setTime(toDay);
         this.idJour=calendar.get(Calendar.DAY_OF_WEEK)-1;
+        System.out.println(this.idJour);
         this.time = Time.valueOf(java.time.LocalTime.now());
         this.jour =jourService.getJourById(idJour);
         this.anneeUniv=calendarService.getAll(toDay);
@@ -159,13 +160,14 @@ public class PointageController {
             semestre=2;
         }
         for (PointageModel pointage: pointages) {
-            SaisieModelSqlServer seanceEnsiegnenment=saisieServiceSqlServer.verfierSeanceEnsiegnenment(pointage.getSalle().getId(),c.getJour().getCod_Jour(),c.getSeance().getId(),year,semestre);
+            System.out.println("idSalle " +pointage.getSalle().getId());
+            List<Integer> listSeance=seanceService.getSeancesByTime(time);
+            SaisieModelSqlServer seanceEnsiegnenment=saisieServiceSqlServer.verfierSeanceEnsiegnenment(pointage.getSalle().getId(),c.getJour().getCod_Jour(),listSeance,year,semestre);
             if(seanceEnsiegnenment==null)
             {
                 if (pointage.getOccupee()==true)
                 {
-                    List<Integer> listSeance=seanceService.getSeancesByTime(time);
-                    PreRattrapageModel preRattrapage=preRattrapageService.getByDaterattBySalleBySeance(toDay,pointage.getSalle().getId(),listSeance,true,false,year,semestre);
+                    PreRattrapageModel preRattrapage=preRattrapageService.getByDaterattBySalleBySeance(toDay,pointage.getSalle().getId(),listSeance,1,false,year,semestre);
                     if(preRattrapage != null)
                     {
                         preRattrapage.setEnsiegnee(true);
@@ -173,7 +175,7 @@ public class PointageController {
                     }
                     else
                     {
-                        RattrapageModel rattrapage=rattrapageService.getByDaterattBySalleBySeance(toDay,pointage.getSalle().getId(),listSeance,true,false,year,semestre);
+                        RattrapageModel rattrapage=rattrapageService.getByDaterattBySalleBySeance(toDay,pointage.getSalle().getId(),listSeance,1,false,year,semestre);
                         if(rattrapage != null)
                         {
                             rattrapage.setEnsiegnee(true);
@@ -181,11 +183,11 @@ public class PointageController {
                         }
                         else
                         {
-                            String message="Vous ete marquee que la salle "+pointage.getSalle().getNom_salle()+
+                            /*String message="Vous ete marquee que la salle "+pointage.getSalle().getNom_salle()+
                                     " est en cours d'ensiegnement mais aucun seance d'ensiegnement, preRattrapage, rattrapage dans ce date";
                             ProblemPointageModel problem=new ProblemPointageModel(this.time,this.toDay,
                                     message,pointage.getIdPointage(),false);
-                            problemPointageService.storeProblemPointage(problem);
+                            problemPointageService.storeProblemPointage(problem);*/
 
                         }
                     }
@@ -193,9 +195,11 @@ public class PointageController {
             }
             else
             {
+                System.out.println("enseignenment");
                 if (pointage.getOccupee()==false)
                 {
-                    PreRattrapageModel preRattrapage=preRattrapageService.getBySAbsencebyDAbsence(seanceEnsiegnenment.getNum(),c.getDateControl(),true,true);
+                    System.out.println("false");
+                    PreRattrapageModel preRattrapage=preRattrapageService.getBySAbsencebyDAbsence(seanceEnsiegnenment.getNum(),c.getDateControl(),1,true);
                     if(preRattrapage == null)
                     {
                         AbsenceModel absence=new AbsenceModel(c.getDateControl(),seanceEnsiegnenment.getNum(),

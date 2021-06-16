@@ -3,14 +3,24 @@ package tn.isetsf.bpointage.service.MySql;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.isetsf.bpointage.model.MySql.AbsenceModel;
+import tn.isetsf.bpointage.model.MySql.AnneeUnviModel;
 import tn.isetsf.bpointage.repository.MySql.AbsenceRepository;
+import tn.isetsf.bpointage.service.SqlServer.EnsiegnantServiceSqlServer;
 
+import java.sql.Date;
 import java.util.List;
 
 @Service
 public class AbsenceService {
     @Autowired
     private AbsenceRepository absenceRepository;
+    @Autowired
+    private EnsiegnantServiceSqlServer ensiegnantServiceSqlServer;
+
+    public List<Date> getDatesAbsences(AnneeUnviModel anneeUnviModel) {
+         return absenceRepository.getDatesAbsences(anneeUnviModel.getStart(),anneeUnviModel.getEnd());
+    }
+
     public AbsenceModel storeAbsence(AbsenceModel absence)
     {
         return absenceRepository.save(absence);
@@ -22,5 +32,23 @@ public class AbsenceService {
 
     public List<AbsenceModel> getAbcensesNonVerifier(int idEnseignant) {
         return absenceRepository.getAbcensesNonVerifier(idEnseignant);
+    }
+    public int getNbAbsenceBydep(int idDep)
+    {
+        List<Integer> listIdEnsei=ensiegnantServiceSqlServer.getEnsiegnantBydepartement(idDep);
+        return absenceRepository.getNbAbsenceBydep(listIdEnsei);
+    }
+
+    public int getAllByDateByDep(Date date,int idDep ) {
+        List<Integer> listIdEnsei=ensiegnantServiceSqlServer.getEnsiegnantBydepartement(idDep);
+        return absenceRepository.getAllByDateByDep(date,listIdEnsei);
+    }
+    public List<AbsenceModel> getAbsenceByIdEnseignant(int year, int semestre, int idEnsei) {
+        return absenceRepository.getAbcenseByIdEnseignant(year,semestre,idEnsei);
+
+    }
+
+    public List<AbsenceModel> getAbcensesNonVerifierByDate(int idEnseignant,Date dateDebut, Date datefin) {
+        return absenceRepository.getAbcensesNonVerifierByDate(idEnseignant,dateDebut,datefin);
     }
 }

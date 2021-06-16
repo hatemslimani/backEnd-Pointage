@@ -54,4 +54,40 @@ public class CalendarController {
             calendarService.addAnneUnvi(annee);
         }
     }
+    @PostMapping("/updateAnneUnvi")
+    public void updateAnneeUnvi(@RequestBody AnneeUnviModel anneeUnviModel)
+    {
+        AnneeUnviModel annee=calendarService.getAnneeUnivById(anneeUnviModel.getIdAnneeUnvi());
+        if (annee==null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Annee universitaire introuvable !! ");
+        }
+        annee.setStart(anneeUnviModel.getStart());
+        annee.setEnd(anneeUnviModel.getEnd());
+        annee.setStartSemstre1(anneeUnviModel.getStartSemstre1());
+        annee.setEndSemestre1(anneeUnviModel.getEndSemestre1());
+        annee.setStartSemstre2(anneeUnviModel.getStartSemstre2());
+        annee.setEndSemestre2(anneeUnviModel.getEndSemestre2());
+        calendarService.updateAnneeUnvi(annee);
+        throw new ResponseStatusException(HttpStatus.OK,"Annee universitaire Modifier ");
+    }
+    @GetMapping("/getEvent/{id}")
+    public EventModel getEvent(@PathVariable int id)
+    {
+        return calendarService.getEventById(id);
+    }
+    @PostMapping("/updateEvent")
+    public void updateEvent(@RequestBody EventModel eventModel)
+    {
+        EventModel event=calendarService.getEventById(eventModel.getId());
+        if (event==null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Evenement introuvable !! ");
+        }
+        event.setTitle(eventModel.getTitle());
+        event.setStart(eventModel.getStart());
+        event.setEnd(eventModel.getEnd());
+        calendarService.updateEvent(event);
+        throw new ResponseStatusException(HttpStatus.OK,"Evenement Modifier ");
+    }
 }

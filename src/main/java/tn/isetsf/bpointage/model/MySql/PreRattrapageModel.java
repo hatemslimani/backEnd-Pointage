@@ -1,6 +1,7 @@
 package tn.isetsf.bpointage.model.MySql;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,8 @@ public class PreRattrapageModel {
     private Date dateAbsence;
     private int idNiveau;
     private int idSeanceAbsence;
-    private boolean validee;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    private int status;
     private boolean ensiegnee;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateRatt;

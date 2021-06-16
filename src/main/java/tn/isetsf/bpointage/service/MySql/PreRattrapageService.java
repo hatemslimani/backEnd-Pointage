@@ -18,19 +18,38 @@ public class PreRattrapageService {
         preRattrapageRepossitory.save(p);
     }
 
-    public List<PreRattrapageModel> getAllByEnsie(List<Integer> idEnsiegnant) {
-        return preRattrapageRepossitory.findAllByEnsie(idEnsiegnant);
+    public List<PreRattrapageModel> getAllByEnsie(List<Integer> idEnsiegnant,int year,int semestre) {
+        return preRattrapageRepossitory.findAllByEnsie(idEnsiegnant,year,semestre);
     }
 
-    public PreRattrapageModel getBySAbsencebyDAbsence(int num, Date dateControl,boolean validee,boolean ensiegnee) {
+    public PreRattrapageModel getBySAbsencebyDAbsence(int num, Date dateControl,int validee,boolean ensiegnee) {
         return preRattrapageRepossitory.getBySAbsencebyDAbsence(num,dateControl,validee,ensiegnee);
     }
 
-    public PreRattrapageModel getByDaterattBySalleBySeance(java.sql.Date toDay, int idSalle, List<Integer> listSeance, boolean validee, boolean ensiegnee,int year,int semestre) {
-        return preRattrapageRepossitory.getByDaterattBySalleBySeance(toDay,idSalle,listSeance,validee,ensiegnee,year,semestre);
+    public PreRattrapageModel getByDaterattBySalleBySeance(java.sql.Date toDay, int idSalle, List<Integer> listSeance, int status, boolean ensiegnee,int year,int semestre) {
+        return preRattrapageRepossitory.getByDaterattBySalleBySeance(toDay,idSalle,listSeance,status,ensiegnee,year,semestre);
     }
     /*public List<PreRattrapageModel>getAll(int id)
     {
         return preRattrapageRepossitory.findAllByDepartement(id);
     }*/
+    public PreRattrapageModel getById(int idPre)
+    {
+        return preRattrapageRepossitory.findById(idPre).orElse(null);
+    }
+    public void deletePreRattrapage(PreRattrapageModel p)
+    {
+        preRattrapageRepossitory.delete(p);
+    }
+
+    public void savePreRattrapage(PreRattrapageModel preRattrapageModel) {
+        preRattrapageRepossitory.save(preRattrapageModel);
+    }
+    public void deleteEnseignantPreRatt(int id)
+    {
+        preRattrapageRepossitory.deleteById(id);
+    }
+    public List<PreRattrapageModel> getAllByIdEnsie(int idEnsei) {
+        return preRattrapageRepossitory.getAllByIdEnsie(idEnsei);
+    }
 }

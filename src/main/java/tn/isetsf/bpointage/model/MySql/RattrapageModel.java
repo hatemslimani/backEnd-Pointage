@@ -20,7 +20,7 @@ public class RattrapageModel {
     private int idEnsiegnant;
     private int idNiveau;
     private int idSeanceAbsence;
-    private boolean validee;
+    private int status;
     private boolean ensiegnee;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateRatt;

@@ -3,8 +3,11 @@ package tn.isetsf.bpointage.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import tn.isetsf.bpointage.model.MySql.User;
+import tn.isetsf.bpointage.service.MySql.UserService;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -13,7 +16,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtil {
-
+    @Autowired
+    private UserService userService;
     private String secret = "pointage";
 
     public String extractUsername(String token) {
@@ -37,7 +41,9 @@ public class JwtUtil {
     }
 
     public String generateToken(String username) {
+        User user=userService.getUserByEmail(username);
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role",user.getRole());
         return createToken(claims, username);
     }
 

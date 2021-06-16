@@ -16,11 +16,12 @@ public class SeanceService {
     private SeanceRepository seanceRepository;
     public List<SeanceModel> getAll()
     {
-        return seanceRepository.findAll();
+        return seanceRepository.getAll();
     }
     public void storeSeance(SeanceModelSqlServer s)
     {
         SeanceModel seance=new SeanceModel();
+        System.out.println(s.getCOD_senace());
         seance.setId(s.getCOD_senace());
         seance.setNom_Seance(s.getNom_Seance());
         seance.setDuree(s.getDuree());

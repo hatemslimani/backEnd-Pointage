@@ -22,9 +22,12 @@ public class User {
     private String nom;
     private String prenom;
     private String userName;
-    @JsonIgnore
+    //@JsonIgnore
     private String password;
     private String role;
-    private String departement;
-
+    private int idEnseignant;
+    private Boolean firstLogin;
+    @ManyToOne
+    @JoinColumn(name = "idDepartementt")
+    private DepartementModel departementt;
 }

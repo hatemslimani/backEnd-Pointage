@@ -44,4 +44,12 @@ public class CalendarService {
     public List<EventModel> getEventsByDate(Date toDay) {
         return eventRepository.getEventsByDate(toDay);
     }
+
+    public void updateAnneeUnvi(AnneeUnviModel annee) {
+        anneeUnviRepository.save(annee);
+    }
+
+    public void updateEvent(EventModel event) {
+        eventRepository.save(event);
+    }
 }

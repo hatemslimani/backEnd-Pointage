@@ -15,4 +15,6 @@ public interface SeanceRepository extends JpaRepository<SeanceModel,Integer> {
     SeanceModel findSeanceByTime(Time t);
     @Query("select s.id from SeanceModel s where s.debutSeance<= :time and s.finSeance >= :time")
     List<Integer> getSeancesByTime(Time time);
+    @Query("select s from SeanceModel s order by s.debutSeance asc,s.duree asc ")
+    List<SeanceModel> getAll();
 }

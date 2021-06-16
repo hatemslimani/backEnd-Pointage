@@ -17,11 +17,29 @@ public class RattrapageService {
         rattrapageRepository.save(ratt);
     }
 
-    public List<RattrapageModel> getAllRattrapageByEnsie(List<Integer> idEnsiegnant) {
-        return rattrapageRepository.getAllRattrapageByEnsie(idEnsiegnant);
+    public List<RattrapageModel> getAllRattrapageByEnsie(List<Integer> idEnsiegnant,int year,int semestre) {
+        return rattrapageRepository.getAllRattrapageByEnsie(idEnsiegnant,year,semestre);
     }
 
-    public RattrapageModel getByDaterattBySalleBySeance(Date toDay, int idSalle, List<Integer> listSeance, boolean validee, boolean ensiegnee, int year, int semestre) {
+    public RattrapageModel getByDaterattBySalleBySeance(Date toDay, int idSalle, List<Integer> listSeance, int validee, boolean ensiegnee, int year, int semestre) {
         return rattrapageRepository.getByDaterattBySalleBySeance(toDay,idSalle,listSeance,validee,ensiegnee,year,semestre);
+    }
+
+    public RattrapageModel getById(int idRatt) {
+        return rattrapageRepository.findById(idRatt).orElse(null);
+    }
+
+    public void deletePreRattrapage(RattrapageModel rattrapage) {
+        rattrapageRepository.delete(rattrapage);
+    }
+
+    public void saveRattrapage(RattrapageModel rattrapageModel) {
+        rattrapageRepository.save(rattrapageModel);
+    }
+    public void deleteEnseignantRatt(int id) {
+        rattrapageRepository.deleteById(id);
+    }
+    public List<RattrapageModel> getAllByIdEnsie(int idEnsei) {
+        return rattrapageRepository.getAllByIdEnsie(idEnsei);
     }
 }

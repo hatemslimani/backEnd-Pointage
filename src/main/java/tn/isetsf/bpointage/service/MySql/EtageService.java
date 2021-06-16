@@ -3,6 +3,8 @@ package tn.isetsf.bpointage.service.MySql;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.isetsf.bpointage.model.MySql.EtageModel;
+import tn.isetsf.bpointage.model.entity.Etage;
+import tn.isetsf.bpointage.repository.MySql.BlockRepository;
 import tn.isetsf.bpointage.repository.MySql.EtageRepository;
 
 import java.util.List;
@@ -12,7 +14,8 @@ public class EtageService
 {
     @Autowired
     private EtageRepository etageRepository;
-
+    @Autowired
+    private BlockRepository blockRepository;
     public List<EtageModel> getEtagesByBlock(int idBlock) {
         return etageRepository.getEtagesByBlock(idBlock);
     }
@@ -32,5 +35,8 @@ public class EtageService
     {
         etageRepository.delete(e);
     }
-
+    public void editEtage(EtageModel etage)
+    {
+        etageRepository.save(etage);
+    }
 }

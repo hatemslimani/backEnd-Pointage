@@ -23,8 +23,13 @@ public class Remplacement {
     private String Nom_niveau;
     private String nom_salle;
     private String nom_Seance;
+    private String abNom_salle;
+    private String abNom_Seance;
+    private boolean ensiegnee;
     private int anne;
     private int semestre;
+    private int status;
+    private String matiere;
     /*public PreRattrapage(int cod_rattrapage, int idEnsiegnant,int idNiveau,String nom_Seance,String nom_salle, Date dateAbsence,  Date dateRatt, int anne, int semestre) {
         this.cod_rattrapage = cod_rattrapage;
         this.idEnsiegnant = idEnsiegnant;
