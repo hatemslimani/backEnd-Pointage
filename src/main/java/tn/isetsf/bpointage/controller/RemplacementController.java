@@ -67,21 +67,21 @@ public class RemplacementController {
         this.toDay= new java.sql.Date(new java.util.Date().getTime());
         this.calendar = Calendar.getInstance();
         calendar.setTime(toDay);
-        this.idJour=calendar.get(Calendar.DAY_OF_WEEK)-1;
+        System.out.println(idJour);
         this.year=calendar.get(Calendar.YEAR);
         this.jour =jourService.getJourById(idJour);
         this.anneeUniv=calendarService.getAll(toDay);
         this.events=calendarService.getEventsByDate(toDay);
-        Interval interval1=new Interval(new DateTime(anneeUniv.getStartSemstre1()),new DateTime(anneeUniv.getEndSemestre1()));
-        Interval interval2=new Interval(new DateTime(anneeUniv.getStartSemstre2()),new DateTime(anneeUniv.getEndSemestre2()));
-        if (interval1.contains(new DateTime(toDay)))
-        {
-            semestre=1;
-        }
-        if (interval2.contains(new DateTime(toDay)))
-        {
-            semestre=2;
-        }
+            if (anneeUniv != null) {
+                Interval interval1 = new Interval(new DateTime(anneeUniv.getStartSemstre1()), new DateTime(anneeUniv.getEndSemestre1()));
+                Interval interval2 = new Interval(new DateTime(anneeUniv.getStartSemstre2()), new DateTime(anneeUniv.getEndSemestre2()));
+                if (interval1.contains(new DateTime(toDay))) {
+                    semestre = 1;
+                }
+                if (interval2.contains(new DateTime(toDay))) {
+                    semestre = 2;
+                }
+            }
     }
     @GetMapping("/")
     public List<Remplacement> getAll(@AuthenticationPrincipal UserDetails user)
@@ -100,13 +100,30 @@ public class RemplacementController {
         return remplacements;
     }
     @GetMapping("/freeSalle/{dateRatt}/{idSeance}")
-    public List<SalleModel> getFreeSalle(@PathVariable String dateRatt ,@PathVariable int idSeance) throws ParseException {
-        Date date=new SimpleDateFormat("dd-MM-yyyy").parse(dateRatt);
+    public List<SalleModel> getFreeSalle(@PathVariable java.sql.Date dateRatt , @PathVariable int idSeance) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        int idJour=calendar.get(Calendar.DAY_OF_WEEK)+1;
-        //test si jour fause est si jour appartient au jour frais
+        calendar.setTime(dateRatt);
+        int idJour=calendar.get(Calendar.DAY_OF_WEEK)-1;
+        if (jourService.getJourById(idJour)==null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"date de remplacement invalide");
+        }
         return saisieServiceSqlServer.getFreeSalle(idJour,idSeance);
+    }
+    @GetMapping("/getFreeSallePre/{dateRatt}/{idSeance}")
+    public List<SalleModel> getFreeSallePre(@PathVariable java.sql.Date dateRatt , @PathVariable int idSeance) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateRatt);
+        int idJour=calendar.get(Calendar.DAY_OF_WEEK)-1;
+        if (jourService.getJourById(idJour)==null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"date de remplacement invalide");
+        }
+        List<Integer>idSallePre=preRattrapageService.getSallePre(dateRatt,idSeance);
+        List<Integer>idSalleRatt=rattrapageService.getSalleRatt(dateRatt,idSeance);
+        idSallePre.add(0);idSalleRatt.add(0);
+        List<Integer>idSeanceEnnseignament=seanceRepository.getIdseanceensie(idSeance);
+        return saisieServiceSqlServer.getFreeSallePre(idJour,idSeanceEnnseignament,idSallePre,idSalleRatt);
     }
     @PostMapping("/addPreRattrapage")
     public void addPreRattrapage(@RequestBody Remplacement pre)
@@ -234,10 +251,17 @@ public class RemplacementController {
     {
         return saisieServiceSqlServer.getSaisenceParEnsiegnant(id);
     }
-    @GetMapping("ensiegnement/seanceAbsence/{nomEnsiegnant}/{idGroup}")
-    public List<SeanceAbsenceModel> getSeanceAbsence(@PathVariable String nomEnsiegnant,@PathVariable int idGroup)
+    @GetMapping("ensiegnement/seanceAbsence/{nomEnsiegnant}/{idGroup}/{dateAbsence}")
+    public List<SeanceAbsenceModel> getSeanceAbsence(@PathVariable String nomEnsiegnant, @PathVariable int idGroup, @PathVariable java.sql.Date dateAbsence)
     {
-        return saisieServiceSqlServer.getSeanceAbsence(nomEnsiegnant,idGroup);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateAbsence);
+        int idJour=calendar.get(Calendar.DAY_OF_WEEK)-1;
+        if (jourService.getJourById(idJour)==null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"date d'absence invalide");
+        }
+        return saisieServiceSqlServer.getSeanceAbsence(nomEnsiegnant,idGroup,idJour);
     }
     @GetMapping("/getPreRattrapageById/{idPre}")
     public Remplacement getPreRattrapageById(@PathVariable int idPre)
@@ -334,5 +358,25 @@ public class RemplacementController {
             }}
         rattrapageModel.setStatus(r.getStatus());
         rattrapageService.saveRattrapage(rattrapageModel);
+    }
+    @GetMapping("/getSeancesPossibles/{dateRatt}/{idEnseignant}/{idGroup}/{idSeanceAbsence}")
+    public List<SeanceModel> getSeancesPossibles(@PathVariable java.sql.Date dateRatt, @PathVariable int idEnseignant,@PathVariable int idGroup,@PathVariable int idSeanceAbsence)
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateRatt);
+        int idJour=calendar.get(Calendar.DAY_OF_WEEK)-1;
+        if (jourService.getJourById(idJour)==null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"date de remplacement invalide");
+        }
+        List<Integer> idSeanceGroupe=saisieServiceSqlServer.getIdSeanceGroupe(idJour,idGroup);
+        List<Integer> idSeanceEnseignant=saisieServiceSqlServer.getIdSeanceEnseignant(idJour,idEnseignant);
+        List<Integer> idSeancePreGroupe=preRattrapageService.getidSeancePreGroupe(dateRatt,idGroup);
+        List<Integer> idSeanceRattGroupe=rattrapageService.getidSeanceRattGroupe(dateRatt,idGroup);
+        List<Integer> idSeancePreEnseignant=preRattrapageService.getidSeancePreEnseignant(dateRatt,idGroup);
+        List<Integer> idSeanceRattEnseigant=rattrapageService.getidSeanceRattEnseigant(dateRatt,idGroup);
+        Double duree=saisieServiceSqlServer.getDuree(idSeanceAbsence);
+        idSeancePreGroupe.add(0); idSeanceRattGroupe.add(0); idSeancePreEnseignant.add(0); idSeanceRattEnseigant.add(0);idSeanceGroupe.add(0);idSeanceEnseignant.add(0);
+        return seanceRepository.getSeancesPossibles(idSeanceGroupe,idSeanceEnseignant,idSeancePreGroupe,idSeanceRattGroupe,idSeancePreEnseignant,idSeanceRattEnseigant,duree);
     }
 }

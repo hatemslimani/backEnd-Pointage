@@ -52,4 +52,16 @@ public class PreRattrapageService {
     public List<PreRattrapageModel> getAllByIdEnsie(int idEnsei) {
         return preRattrapageRepossitory.getAllByIdEnsie(idEnsei);
     }
+
+    public List<Integer> getidSeancePreGroupe(java.sql.Date dateRatt, int idGroup) {
+        return preRattrapageRepossitory.getidSeancePreGroupe(dateRatt,idGroup);
+    }
+
+    public List<Integer> getidSeancePreEnseignant(java.sql.Date dateRatt, int idGroup) {
+        return preRattrapageRepossitory.getidSeancePreEnseignant(dateRatt,idGroup);
+    }
+
+    public List<Integer> getSallePre(java.sql.Date dateRatt, int idSeance) {
+        return preRattrapageRepossitory.getSallePre(dateRatt,idSeance);
+    }
 }

@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +34,10 @@ public class PointageModel {
     @OneToMany
     @JoinColumn(name = "idPointage",referencedColumnName = "idPointage")
     private List<AbsenceModel> absences=new ArrayList<>();
+    @CreationTimestamp
+    private Timestamp createdAt;
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 
     public PointageModel(SalleModel salle, Boolean occupee) {
         this.salle = salle;

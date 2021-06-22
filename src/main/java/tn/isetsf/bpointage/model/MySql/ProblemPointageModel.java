@@ -3,6 +3,8 @@ package tn.isetsf.bpointage.model.MySql;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -23,7 +25,10 @@ public class ProblemPointageModel {
     private String message;
     private int idPointage;
     private boolean vu;
-    private Timestamp createAt;
+    @CreationTimestamp
+    private Timestamp createdAt;
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 
     public ProblemPointageModel(Time timePointage, Date datePointage, String message, int idPointage, boolean vu) {
         this.timePointage = timePointage;

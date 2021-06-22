@@ -108,7 +108,7 @@ public class EnseignantController {
             p.setIdEnsiegnant(s.getEnsiegnant().getCOD_Enseig());
             p.setAnnee(s.getAnnee1());
             p.setSemestre(s.getSemestre1());
-            User user=userService.getResponsableByDepartement(ensiegnantServiceSqlServer.getEnsiegnantById(userService.getUserByEmail(user1.getUsername()).getId()).getDepartement().getCOD_dep());
+            User user=userService.getResponsableByDepartement(ensiegnantServiceSqlServer.getEnsiegnantById(userService.getUserByEmail(user1.getUsername()).getIdEnseignant()).getDepartement().getCOD_dep());
             if (user != null) {
                 NotificationModel notificationModel = new NotificationModel();
                 notificationModel.setTitle("Demande de remplacement");
@@ -137,7 +137,7 @@ public class EnseignantController {
             r.setAnnee(absence.getAnnee());
             r.setSemestre(absence.getSemestre());
             r.setAbsence(absenceService.getAbsenceById(ratt.getIdAbsence()));
-            User user=userService.getResponsableByDepartement(ensiegnantServiceSqlServer.getEnsiegnantById(userService.getUserByEmail(user1.getUsername()).getId()).getDepartement().getCOD_dep());
+            User user=userService.getResponsableByDepartement(ensiegnantServiceSqlServer.getEnsiegnantById(userService.getUserByEmail(user1.getUsername()).getIdEnseignant()).getDepartement().getCOD_dep());
             if (user != null) {
                 NotificationModel notificationModel = new NotificationModel();
                 notificationModel.setTitle("Demande de remplacement");

@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,4 +29,8 @@ public class BlockModel {
     @OneToMany
     @JoinColumn(name = "idBlock1",referencedColumnName = "id")
     private List<EtageModel> etages=new ArrayList<>();
+    @CreationTimestamp
+    private Timestamp createdAt;
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 }

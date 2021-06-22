@@ -3,9 +3,12 @@ package tn.isetsf.bpointage.model.MySql;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -25,6 +28,10 @@ public class AbsenceModel {
     @ManyToOne
     @JoinColumn(name = "idPointage")
     private PointageModel pointage;
+    @CreationTimestamp
+    private Timestamp createdAt;
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 
     public AbsenceModel(Date dateAbsence, int idSeanceEnsiAbsence, int idEnsiegnant, int annee, int semestre, PointageModel pointage) {
         this.dateAbsence = dateAbsence;

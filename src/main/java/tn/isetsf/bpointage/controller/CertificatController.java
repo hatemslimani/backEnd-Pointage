@@ -84,7 +84,7 @@ public class CertificatController {
         if (user != null) {
                 NotificationModel notificationModel = new NotificationModel();
                 notificationModel.setTitle("Departement " + userService.getUserByEmail(user1.getUsername()).getDepartementt().getNom_dapartement());
-                notificationModel.setMsg("L'enseignant " + userService.getEnseignant(certificat.getIdEnseignant()).getNom() + " a deposé son certificat");
+                notificationModel.setMsg("L'enseignant " + ensiegnantServiceSqlServer.getEnsiegnantById(certificat.getIdEnseignant()).getNom_Ensi() + " a deposé son certificat");
                 notificationModel.setIdReciver(user.getId());
                 notificationModel.setVu(true);
                 notificationService.save(notificationModel);

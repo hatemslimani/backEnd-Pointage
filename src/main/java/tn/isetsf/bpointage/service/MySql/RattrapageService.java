@@ -42,4 +42,16 @@ public class RattrapageService {
     public List<RattrapageModel> getAllByIdEnsie(int idEnsei) {
         return rattrapageRepository.getAllByIdEnsie(idEnsei);
     }
+
+    public List<Integer> getidSeanceRattGroupe(Date dateRatt, int idGroup) {
+        return rattrapageRepository.getidSeanceRattGroupe(dateRatt,idGroup);
+    }
+
+    public List<Integer> getidSeanceRattEnseigant(Date dateRatt, int idGroup) {
+        return rattrapageRepository.getidSeanceRattEnseigant(dateRatt,idGroup);
+    }
+
+    public List<Integer> getSalleRatt(Date dateRatt, int idSeance) {
+        return rattrapageRepository.getSalleRatt(dateRatt,idSeance);
+    }
 }

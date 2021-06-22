@@ -5,9 +5,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -16,7 +19,7 @@ import java.sql.Date;
 @Table(name="prerattrapage")
 public class PreRattrapageModel {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int cod_rattrapage;
     private int idEnsiegnant;
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -36,4 +39,8 @@ public class PreRattrapageModel {
     private SeanceModel Seance;
     private int annee;
     private int semestre;
+    @CreationTimestamp
+    private Timestamp createdAt;
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 }

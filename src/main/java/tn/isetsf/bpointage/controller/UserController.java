@@ -78,8 +78,7 @@ public class UserController {
 
         if (u.getRole().equals("ENSEIGNANT"))
         {
-            System.out.println(" idensi "+u.getIdEnseignant());
-            if(u.getUserName()==null || u.getIdEnseignant() ==0   || u.getPassword()==null )
+            if(u.getUserName()==null || u.getIdEnseignant() ==0  )
             {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"tous les informations est obligatoire");
             }
@@ -116,7 +115,7 @@ public class UserController {
                 us.setPassword(password);
                 sendEmailService.sendPassword(password,u.getUserName());
                 us.setRole(u.getRole());
-                us.setFirstLogin(false);
+                us.setFirstLogin(true);
                 userService.CreateUser(us);
             }
     }

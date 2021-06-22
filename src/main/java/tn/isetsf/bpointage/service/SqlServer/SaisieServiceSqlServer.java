@@ -18,8 +18,8 @@ public class SaisieServiceSqlServer {
     {
         return  saisieRepositorySqlServer.findAllByEnsiegnant(id);
     }
-    public List<SeanceAbsenceModel> getSeanceAbsence(String nomEnsiegnant, int idGroup) {
-        return saisieRepositorySqlServer.findAllSeanceAbsence(nomEnsiegnant,idGroup);
+    public List<SeanceAbsenceModel> getSeanceAbsence(String nomEnsiegnant, int idGroup,int idJour) {
+        return saisieRepositorySqlServer.findAllSeanceAbsence(nomEnsiegnant,idGroup,idJour);
     }
 
     public List<SalleModel> getFreeSalle(int  idJour, int idSeance) {
@@ -35,5 +35,21 @@ public class SaisieServiceSqlServer {
     }
     public List<SaisieModelSqlServer> getSeanceDenseignement(int idJour,int idEnsie,int year,int semestre) {
         return saisieRepositorySqlServer.getSeanceDenseignement(idJour,idEnsie,year,semestre);
+    }
+
+    public List<Integer> getIdSeanceGroupe(int idJour, int idGroup) {
+        return saisieRepositorySqlServer.getIdSeanceGroupe(idJour,idGroup);
+    }
+
+    public List<Integer> getIdSeanceEnseignant(int idJour, int idEnseignant) {
+        return saisieRepositorySqlServer.getIdSeanceEnseignant(idJour,idEnseignant);
+    }
+
+    public Double getDuree(int idSeanceAbsence) {
+        return saisieRepositorySqlServer.getDuree(idSeanceAbsence);
+    }
+
+    public List<SalleModel> getFreeSallePre(int idJour, List<Integer> idSeance, List<Integer> idSallePre, List<Integer> idSalleRatt) {
+        return saisieRepositorySqlServer.getFreeSallePre(idJour,idSeance,idSallePre,idSalleRatt);
     }
 }
