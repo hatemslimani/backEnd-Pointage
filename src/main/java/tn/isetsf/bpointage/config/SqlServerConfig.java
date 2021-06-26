@@ -18,29 +18,29 @@ import java.util.HashMap;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(entityManagerFactoryRef = "bookEntityManagerFactory", transactionManagerRef = "bookTransactionManager", basePackages = {
+@EnableJpaRepositories(entityManagerFactoryRef = "ServerEntityManagerFactory", transactionManagerRef = "ServerTransactionManager", basePackages = {
 		"tn.isetsf.bpointage.repository.SqlServer" })
 public class SqlServerConfig {
 
-	@Bean(name = "bookDataSource")
+	@Bean(name = "ServerDataSource")
 	@ConfigurationProperties(prefix = "spring.book.datasource")
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();
 	}
 
-	@Bean(name = "bookEntityManagerFactory")
-	public LocalContainerEntityManagerFactoryBean bookEntityManagerFactory(EntityManagerFactoryBuilder builder,
-			@Qualifier("bookDataSource") DataSource dataSource) {
+	@Bean(name = "ServerEntityManagerFactory")
+	public LocalContainerEntityManagerFactoryBean ServerEntityManagerFactory(EntityManagerFactoryBuilder builder,
+			@Qualifier("ServerDataSource") DataSource dataSource) {
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put("hibernate.hbm2ddl.auto", "none");
 		properties.put("hibernate.dialect", "org.hibernate.dialect.SQLServerDialect");
 		return builder.dataSource(dataSource).properties(properties)
-				.packages("tn.isetsf.bpointage.model.SqlServer").persistenceUnit("Book").build();
+				.packages("tn.isetsf.bpointage.model.SqlServer").persistenceUnit("Server").build();
 	}
 
-	@Bean(name = "bookTransactionManager")
-	public PlatformTransactionManager bookTransactionManager(
-			@Qualifier("bookEntityManagerFactory") EntityManagerFactory bookEntityManagerFactory) {
-		return new JpaTransactionManager(bookEntityManagerFactory);
+	@Bean(name = "ServerTransactionManager")
+	public PlatformTransactionManager ServerTransactionManager(
+			@Qualifier("ServerEntityManagerFactory") EntityManagerFactory ServerEntityManagerFactory) {
+		return new JpaTransactionManager(ServerEntityManagerFactory);
 	}
 }

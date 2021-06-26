@@ -24,4 +24,8 @@ public interface RattrapageRepository extends JpaRepository<RattrapageModel,Inte
     List<Integer> getidSeanceRattEnseigant(Date dateRatt, int idGroup);
     @Query("select p.salle.Id from RattrapageModel p where p.dateRatt=:dateRatt and p.Seance.id=:idSeance")
     List<Integer> getSalleRatt(Date dateRatt, int idSeance);
+    @Query("select p.absence.idAbsence from RattrapageModel p where p.idEnsiegnant=:idEnseignant and p.dateRatt>=:toDay")
+    List<Integer> getRattrapageByEnseiByDate(int idEnseignant, Date toDay);
+    @Query("select p.absence.idAbsence from RattrapageModel p where p.dateRatt>= :toDay and p.idEnsiegnant =:idEnseignant")
+    List<Integer> getbyDate(Date toDay, int idEnseignant);
 }

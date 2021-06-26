@@ -77,18 +77,18 @@ public class DepartementController {
         EtageModel etage=etageService.getEtageById(idEtage);
         if (etage==null)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Etage pas trouvé");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Etage n'existe pas");
         }
         etageService.deleteEtage(etage);
-        throw new ResponseStatusException(HttpStatus.OK,"supprimer avec success");
+        throw new ResponseStatusException(HttpStatus.OK,"Etage supprimé avec succès");
     }
     @GetMapping("/etage/{idEtage}")
     public Etage getEtagebyId(@PathVariable int idEtage)
     {
         EtageModel etage=etageService.getEtageById(idEtage);
         if (etage==null)
-        {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Etage non trouvé");
+            {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Etage n'existe pas ");
         }
         Etage e=new Etage();
         e.setNomEtage(etage.getNomEtage());
@@ -103,13 +103,13 @@ public class DepartementController {
         EtageModel etage=etageService.getEtageById(e.getIdEtage());
         if (etage==null)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Etage non trouvé");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Etage n'existe pas");
         }
         etage.setNomEtage(e.getNomEtage());
         etage.setBlock(blockService.getBlock(e.getIdBlock()));
         etage.setSalles(e.getSalles());
         etageService.editEtage(etage);
-        throw new ResponseStatusException(HttpStatus.OK,"Etage modifier");
+        throw new ResponseStatusException(HttpStatus.OK,"Etage modifié avec succès ");
     }
     @GetMapping("/notResponsable")
     public List<DepartementModel>getdepartementNotResponsable()

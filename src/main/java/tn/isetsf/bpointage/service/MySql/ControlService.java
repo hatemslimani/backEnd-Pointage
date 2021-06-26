@@ -27,4 +27,8 @@ public class ControlService {
     public ControlModel getByBlockByDateBySeanceByJour(int idBlock, Date toDay, int idSeance, int cod_jour) {
         return controlRepository.getByBlockByDateBySeanceByJour(idBlock,toDay,idSeance,cod_jour);
     }
+
+    public ControlModel getByVerification(int idBlock, Date toDay, int seance) {
+        return controlRepository.getByVerification(idBlock,toDay,seance);
+    }
 }

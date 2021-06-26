@@ -20,10 +20,11 @@ public class CalendarController {
         AnneeUnviModel annee=calendarService.getAnneeUnivById(idAnneeUniv);
         if(annee==null)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"essayee d'ajouter un annee universitaire ");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Année universitaire n'existe pas");
         }
         c.setAnneeUnvi(annee);
         calendarService.Add(c);
+        throw new ResponseStatusException(HttpStatus.OK,"Vacance ajoutée avec succès");
     }
     @GetMapping("/delete/{id}")
     public void deleteEvent(@PathVariable int id)
@@ -31,9 +32,10 @@ public class CalendarController {
         EventModel event =calendarService.getEventById(id);
         if(event==null)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Événement introuvable!! ");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Vacance introuvable!");
         }
         calendarService.delete(id);
+        throw new ResponseStatusException(HttpStatus.OK,"Vacance supprimée avec succès ");
     }
     @GetMapping("/")
     public AnneeUnviModel getAll()
@@ -47,11 +49,12 @@ public class CalendarController {
         AnneeUnviModel  anneeUnvi=calendarService.getAll(annee.getStart());
         if (anneeUnvi != null)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Deja exist !! ");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Année universitaire existe déja");
         }
         else
         {
             calendarService.addAnneUnvi(annee);
+            throw new ResponseStatusException(HttpStatus.OK,"Année universitaire ajoutée avec succès ");
         }
     }
     @PostMapping("/updateAnneUnvi")
@@ -60,7 +63,7 @@ public class CalendarController {
         AnneeUnviModel annee=calendarService.getAnneeUnivById(anneeUnviModel.getIdAnneeUnvi());
         if (annee==null)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Annee universitaire introuvable !! ");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Année universitaire n'existe pas ");
         }
         annee.setStart(anneeUnviModel.getStart());
         annee.setEnd(anneeUnviModel.getEnd());
@@ -69,7 +72,7 @@ public class CalendarController {
         annee.setStartSemstre2(anneeUnviModel.getStartSemstre2());
         annee.setEndSemestre2(anneeUnviModel.getEndSemestre2());
         calendarService.updateAnneeUnvi(annee);
-        throw new ResponseStatusException(HttpStatus.OK,"Annee universitaire Modifier ");
+        throw new ResponseStatusException(HttpStatus.OK,"Année universitaire modifiée avec succès ");
     }
     @GetMapping("/getEvent/{id}")
     public EventModel getEvent(@PathVariable int id)
@@ -82,12 +85,12 @@ public class CalendarController {
         EventModel event=calendarService.getEventById(eventModel.getId());
         if (event==null)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Evenement introuvable !! ");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Vacance introuvable! ");
         }
         event.setTitle(eventModel.getTitle());
         event.setStart(eventModel.getStart());
         event.setEnd(eventModel.getEnd());
         calendarService.updateEvent(event);
-        throw new ResponseStatusException(HttpStatus.OK,"Evenement Modifier ");
+        throw new ResponseStatusException(HttpStatus.OK,"Vacance modifiée avec succès ");
     }
 }

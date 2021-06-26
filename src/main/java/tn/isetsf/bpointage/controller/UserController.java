@@ -44,8 +44,6 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private ReportService reportService;
-    @Autowired
     private EnsiegnantServiceSqlServer ensiegnantServiceSqlServer;
     @Autowired
     private DepartementRepository departementRepository;
@@ -74,13 +72,13 @@ public class UserController {
     public void createUser(@RequestBody UserEntity u) throws MessagingException {
         User us=new User();
 
-        if(u.getRole()==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"tous les informations est obligatoire");
+        if(u.getRole()==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Tous les informations sont obligatoires");
 
         if (u.getRole().equals("ENSEIGNANT"))
         {
             if(u.getUserName()==null || u.getIdEnseignant() ==0  )
             {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"tous les informations est obligatoire");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Tous les informations sont obligatoires");
             }
             EnsiegnantModelSqlServer ensiegnantModelSqlServer =ensiegnantServiceSqlServer.getEnsiegnantById(u.getIdEnseignant());
             us.setNom(ensiegnantModelSqlServer.getNom_Ensi());
@@ -91,7 +89,7 @@ public class UserController {
             if(u.getUserName()==null || u.getNom()==null||
                     u.getPrenom()==null )
             {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"tous les informations est obligatoire");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Tous les informations sont obligatoires");
             }
             if (u.getRole().equals("RESPONSABLE"))
             {
@@ -102,7 +100,7 @@ public class UserController {
         }
             if(userService.getUserByEmail(u.getUserName())!=null)
             {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email deja utiliser");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email déja utilisé");
             }else
             {
                 EmailValidator validator = EmailValidator.getInstance();
@@ -137,7 +135,6 @@ public class UserController {
     @GetMapping("/getUser")
     public User getUser(@AuthenticationPrincipal UserDetails user)
     {
-        System.out.println(user.getUsername());
         return userService.getUserByEmail(user.getUsername());
     }
     @PostMapping("/ChangeInfoPer")
@@ -147,35 +144,36 @@ public class UserController {
         user.setNom(u.getNom());
         user.setPrenom(u.getPrenom());
         userService.updateUser(user);
+        throw new ResponseStatusException(HttpStatus.OK,"information changée");
     }
     @PostMapping("/ChangePassword")
     public void changerPassword(@RequestBody UserEntity u)
     {
         if (u.getPassword()=="" || u.getId()==0 || u.getNewPassword()=="")
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"tous les champs obligatoire");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Tous les champs sont obligatoires");
         }
         User user=userService.getUser(u.getId());
         if (!passwordEncoder.matches(u.getPassword(), user.getPassword()))
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"s'il te plaît verifiez Mot de passe actuel ");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"S'il vous plaît verifiez votre mot de passe actuel ");
         }
         user.setPassword(passwordEncoder.encode(u.getNewPassword()));
         userService.updateUser(user);
-        throw new ResponseStatusException(HttpStatus.OK,"Mot de passe changer");
+        throw new ResponseStatusException(HttpStatus.OK,"Mot de passe est changé avec succès");
     }
     @PostMapping("/ChangeEmail")
     public String changerEmail(@RequestBody UserEntity u)
     {
         if(u.getUserName()==null ||  u.getPassword()==null)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"tous les informations est obligatoire");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Tous les informations sont obligatoires");
         }
         else
         {
             if(userService.getUserByEmail(u.getUserName())!=null)
             {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email deja utiliser");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email déja utilisé");
             }else
             {
 
@@ -187,7 +185,7 @@ public class UserController {
                 User user=userService.getUser(u.getId());
                 if (!passwordEncoder.matches(u.getPassword(), user.getPassword()))
                 {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"s'il te plaît verifiez Mot de passe actuel ");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"S'il vous plaît verifiez votre mot de passe actuel ");
                 }
                 if (user != null)
                 {
@@ -210,13 +208,13 @@ public class UserController {
     {
         if (u.getPassword()=="")
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"tous les champs obligatoire");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Tous les champs sont obligatoires");
         }
         User user=userService.getUserByEmail(user1.getUsername());
         user.setPassword(passwordEncoder.encode(u.getPassword()));
         user.setFirstLogin(false);
         userService.updateUser(user);
-        throw new ResponseStatusException(HttpStatus.OK,"Mot de passe changer");
+        throw new ResponseStatusException(HttpStatus.OK,"Mot de passe est changé avec succès");
     }
     @GetMapping("/isFisrtLogin")
     public boolean isFisrtLogin(@AuthenticationPrincipal UserDetails user1)

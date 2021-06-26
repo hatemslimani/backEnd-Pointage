@@ -29,10 +29,6 @@ public class PreRattrapageService {
     public PreRattrapageModel getByDaterattBySalleBySeance(java.sql.Date toDay, int idSalle, List<Integer> listSeance, int status, boolean ensiegnee,int year,int semestre) {
         return preRattrapageRepossitory.getByDaterattBySalleBySeance(toDay,idSalle,listSeance,status,ensiegnee,year,semestre);
     }
-    /*public List<PreRattrapageModel>getAll(int id)
-    {
-        return preRattrapageRepossitory.findAllByDepartement(id);
-    }*/
     public PreRattrapageModel getById(int idPre)
     {
         return preRattrapageRepossitory.findById(idPre).orElse(null);
@@ -63,5 +59,9 @@ public class PreRattrapageService {
 
     public List<Integer> getSallePre(java.sql.Date dateRatt, int idSeance) {
         return preRattrapageRepossitory.getSallePre(dateRatt,idSeance);
+    }
+
+    public PreRattrapageModel getBySeanceDabsenceByDate(int idSeanceAbsence, java.sql.Date dateAbsence) {
+        return preRattrapageRepossitory.getBySeanceDabsenceByDate(idSeanceAbsence,dateAbsence);
     }
 }

@@ -50,6 +50,8 @@ public class EnseignantController {
     private SeanceRepository seanceRepository;
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private JourService jourService;
     @GetMapping("/getPreRattrapages")
     public List<Remplacement> getAllPreRattrapage(@AuthenticationPrincipal UserDetails user)
     {
@@ -117,6 +119,7 @@ public class EnseignantController {
                 notificationModel.setVu(true);
                 notificationService.save(notificationModel);
             }
+            preRattrapageService.savePreRattrapage(p);
         }
     }
 
@@ -124,7 +127,6 @@ public class EnseignantController {
     public void addRattrapage(@RequestBody Remplacement ratt, @AuthenticationPrincipal UserDetails user1)
     {
         AbsenceModel absence=absenceService.getAbsenceById(ratt.getIdAbsence());
-        //test si deja add rattrapage
         if(absence!=null) {
             SaisieModelSqlServer s=saisieServiceSqlServer.getSeanceById(absence.getIdSeanceEnsiAbsence());
             RattrapageModel r = new RattrapageModel();
@@ -146,6 +148,7 @@ public class EnseignantController {
                 notificationModel.setVu(true);
                 notificationService.save(notificationModel);
             }
+            rattrapageService.storeRattrapage(r);
         }
     }
 
@@ -153,7 +156,23 @@ public class EnseignantController {
     @GetMapping("/getNiveau")
     public List<NiveauModelSqlServer> getNiveau(@AuthenticationPrincipal UserDetails user)
     {
-        return niveauServiceSqlServer.getNiveauByEnsieg(userService.getUserByEmail(user.getUsername()).getIdEnseignant());
+        Date toDay= new java.sql.Date(new java.util.Date().getTime());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(toDay);
+        int year=calendar.get(Calendar.YEAR);
+        AnneeUnviModel anneeUniv=calendarService.getAll(toDay);
+        int semestre=0;
+        if (anneeUniv != null) {
+            Interval interval1 = new Interval(new DateTime(anneeUniv.getStartSemstre1()), new DateTime(anneeUniv.getEndSemestre1()));
+            Interval interval2 = new Interval(new DateTime(anneeUniv.getStartSemstre2()), new DateTime(anneeUniv.getEndSemestre2()));
+            if (interval1.contains(new DateTime(toDay))) {
+                semestre = 1;
+            }
+            if (interval2.contains(new DateTime(toDay))) {
+                semestre = 2;
+            }
+        }
+        return niveauServiceSqlServer.getNiveauByEnsieg(userService.getUserByEmail(user.getUsername()).getIdEnseignant(),year,semestre);
     }
 
     @DeleteMapping("/deleteEnseignantPreRatt/{id}")
@@ -261,8 +280,9 @@ public class EnseignantController {
         {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Jour non valide");
         }
-        System.out.println("semestre : "+ semestre + "   annee ; "+year);
-        List<AbsenceModel> absence= absenceService.getAbsenceByIdEnseignant(year,semestre,userService.getUserByEmail(user.getUsername()).getIdEnseignant());
+        List<Integer>ListPre=rattrapageService.getbyDate(toDay,userService.getUserByEmail(user.getUsername()).getIdEnseignant());
+        ListPre.add(0);
+        List<AbsenceModel> absence= absenceService.getAbsenceByIdEnseignantt(year,semestre,userService.getUserByEmail(user.getUsername()).getIdEnseignant(),ListPre);
         List<Absence> ListAbsence=new ArrayList<>();
         for (AbsenceModel s:absence) {
             Absence absence1=new Absence();
@@ -304,7 +324,6 @@ public class EnseignantController {
         {
             return null;
         }
-        System.out.println("semestre : "+ semestre + "   annee ; "+year);
         List<AbsenceModel> absenceModelList=absenceService.getAbsenceByIdEnseignant(year,semestre,userService.getUserByEmail(user.getUsername()).getIdEnseignant());
         List<Absence>absences=new ArrayList<>();
         for (AbsenceModel a:absenceModelList) {
@@ -334,7 +353,66 @@ public class EnseignantController {
             notificationService.save(notification);
         }
     }
-
+    @GetMapping("/getPreSeancesPossibles/{dateRatt}/{idAbsence}")
+    public List<SeanceModel>getPreSeancesPossibles(@PathVariable Date dateRatt,@AuthenticationPrincipal UserDetails user,@PathVariable int idAbsence )
+    {
+        int idEnsiegnant=userService.getUserByEmail(user.getUsername()).getIdEnseignant();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateRatt);
+        int idJour=calendar.get(Calendar.DAY_OF_WEEK)-1;
+        if (jourService.getJourById(idJour)==null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Date de remplacement invalide");
+        }
+        AbsenceModel absence=absenceService.getAbsenceById(idAbsence);
+        SaisieModelSqlServer saisie=saisieServiceSqlServer.getSeanceById(absence.getIdSeanceEnsiAbsence());
+        List<Integer> idSeanceGroupe=saisieServiceSqlServer.getIdSeanceGroupe(idJour,saisie.getNiveau().getCOD_NIVEAU());
+        List<Integer> idSeanceEnseignant=saisieServiceSqlServer.getIdSeanceEnseignant(idJour,idEnsiegnant);
+        List<Integer> idSeancePreGroupe=preRattrapageService.getidSeancePreGroupe(dateRatt,saisie.getNiveau().getCOD_NIVEAU());
+        List<Integer> idSeanceRattGroupe=rattrapageService.getidSeanceRattGroupe(dateRatt,saisie.getNiveau().getCOD_NIVEAU());
+        List<Integer> idSeancePreEnseignant=preRattrapageService.getidSeancePreEnseignant(dateRatt,saisie.getNiveau().getCOD_NIVEAU());
+        List<Integer> idSeanceRattEnseigant=rattrapageService.getidSeanceRattEnseigant(dateRatt,saisie.getNiveau().getCOD_NIVEAU());
+        Double duree=saisie.getSeance().getDuree();
+        idSeancePreGroupe.add(0); idSeanceRattGroupe.add(0); idSeancePreEnseignant.add(0); idSeanceRattEnseigant.add(0);idSeanceGroupe.add(0);idSeanceEnseignant.add(0);
+        return seanceRepository.getSeancesPossibles(idSeanceGroupe,idSeanceEnseignant,idSeancePreGroupe,idSeanceRattGroupe,idSeancePreEnseignant,idSeanceRattEnseigant,duree);
+    }
+    @GetMapping("/getSeancesPossibles/{dateRatt}/{idSeanceAbsence}")
+    public List<SeanceModel> getSeancesPossibles(@PathVariable java.sql.Date dateRatt, @AuthenticationPrincipal UserDetails user,@PathVariable int idSeanceAbsence)
+    {
+        int idEnseignant=userService.getUserByEmail(user.getUsername()).getIdEnseignant();
+        int idGroup=saisieServiceSqlServer.getSeanceById(idSeanceAbsence).getNiveau().getCOD_NIVEAU();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateRatt);
+        int idJour=calendar.get(Calendar.DAY_OF_WEEK)-1;
+        if (jourService.getJourById(idJour)==null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Date de remplacement invalide");
+        }
+        List<Integer> idSeanceGroupe=saisieServiceSqlServer.getIdSeanceGroupe(idJour,idGroup);
+        List<Integer> idSeanceEnseignant=saisieServiceSqlServer.getIdSeanceEnseignant(idJour,idEnseignant);
+        List<Integer> idSeancePreGroupe=preRattrapageService.getidSeancePreGroupe(dateRatt,idGroup);
+        List<Integer> idSeanceRattGroupe=rattrapageService.getidSeanceRattGroupe(dateRatt,idGroup);
+        List<Integer> idSeancePreEnseignant=preRattrapageService.getidSeancePreEnseignant(dateRatt,idGroup);
+        List<Integer> idSeanceRattEnseigant=rattrapageService.getidSeanceRattEnseigant(dateRatt,idGroup);
+        Double duree=saisieServiceSqlServer.getDuree(idSeanceAbsence);
+        idSeancePreGroupe.add(0); idSeanceRattGroupe.add(0); idSeancePreEnseignant.add(0); idSeanceRattEnseigant.add(0);idSeanceGroupe.add(0);idSeanceEnseignant.add(0);
+        return seanceRepository.getSeancesPossibles(idSeanceGroupe,idSeanceEnseignant,idSeancePreGroupe,idSeanceRattGroupe,idSeancePreEnseignant,idSeanceRattEnseigant,duree);
+    }
+    @GetMapping("/getFreeSallePre/{dateRatt}/{idSeance}")
+    public List<SalleModel> getFreeSallePre(@PathVariable java.sql.Date dateRatt , @PathVariable int idSeance) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateRatt);
+        int idJour=calendar.get(Calendar.DAY_OF_WEEK)-1;
+        if (jourService.getJourById(idJour)==null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Date de remplacement invalide");
+        }
+        List<Integer>idSallePre=preRattrapageService.getSallePre(dateRatt,idSeance);
+        List<Integer>idSalleRatt=rattrapageService.getSalleRatt(dateRatt,idSeance);
+        idSallePre.add(0);idSalleRatt.add(0);
+        List<Integer>idSeanceEnnseignament=seanceRepository.getIdseanceensie(idSeance);
+        return saisieServiceSqlServer.getFreeSallePre(idJour,idSeanceEnnseignament,idSallePre,idSalleRatt);
+    }
 
 }
 

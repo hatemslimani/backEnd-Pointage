@@ -61,7 +61,6 @@ public class PointageController {
         this.calendar = Calendar.getInstance();
         calendar.setTime(toDay);
         this.idJour=calendar.get(Calendar.DAY_OF_WEEK)-1;
-        System.out.println(this.idJour);
         this.time = Time.valueOf(java.time.LocalTime.now());
         this.jour =jourService.getJourById(idJour);
         this.anneeUniv=calendarService.getAll(toDay);
@@ -72,6 +71,7 @@ public class PointageController {
     public void Valider()
     {
         init();
+        if (this.anneeUniv==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Hors service");
         int semestre=0;
         Interval interval1=new Interval(new DateTime(anneeUniv.getStartSemstre1()),new DateTime(anneeUniv.getEndSemestre1()));
         Interval interval2=new Interval(new DateTime(anneeUniv.getStartSemstre2()),new DateTime(anneeUniv.getEndSemestre2()));
@@ -126,7 +126,8 @@ public class PointageController {
     @PostMapping("/{idBlock}")
     public ControlModel Pointage(@PathVariable int idBlock , @RequestBody List<Pointage> p) {
         Valider();
-        //test if pointage fait
+        ControlModel ct=controlService.getByVerification(idBlock,this.toDay,this.seance.getId());
+        if (ct != null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"pointage realise");
         List<PointageModel> pointages=new ArrayList<>();
         for (Pointage pt:p) {
             PointageModel pointageModel=new PointageModel(salleService.getSalleById(pt.getId_Salle()),pt.getOccupee());
@@ -160,9 +161,10 @@ public class PointageController {
             semestre=2;
         }
         for (PointageModel pointage: pointages) {
-            System.out.println("idSalle " +pointage.getSalle().getId());
             List<Integer> listSeance=seanceService.getSeancesByTime(time);
-            SaisieModelSqlServer seanceEnsiegnenment=saisieServiceSqlServer.verfierSeanceEnsiegnenment(pointage.getSalle().getId(),c.getJour().getCod_Jour(),listSeance,year,semestre);
+            List<SaisieModelSqlServer> seanceE=saisieServiceSqlServer.verfierSeanceEnsiegnenment(pointage.getSalle().getId(),this.idJour,listSeance,year,semestre);
+            SaisieModelSqlServer seanceEnsiegnenment=null;
+            if (seanceE.size()>0) seanceEnsiegnenment=seanceE.get(0);
             if(seanceEnsiegnenment==null)
             {
                 if (pointage.getOccupee()==true)
@@ -181,24 +183,13 @@ public class PointageController {
                             rattrapage.setEnsiegnee(true);
                             rattrapageService.storeRattrapage(rattrapage);
                         }
-                        else
-                        {
-                            /*String message="Vous ete marquee que la salle "+pointage.getSalle().getNom_salle()+
-                                    " est en cours d'ensiegnement mais aucun seance d'ensiegnement, preRattrapage, rattrapage dans ce date";
-                            ProblemPointageModel problem=new ProblemPointageModel(this.time,this.toDay,
-                                    message,pointage.getIdPointage(),false);
-                            problemPointageService.storeProblemPointage(problem);*/
-
-                        }
                     }
                 }
             }
             else
             {
-                System.out.println("enseignenment");
                 if (pointage.getOccupee()==false)
                 {
-                    System.out.println("false");
                     PreRattrapageModel preRattrapage=preRattrapageService.getBySAbsencebyDAbsence(seanceEnsiegnenment.getNum(),c.getDateControl(),1,true);
                     if(preRattrapage == null)
                     {
@@ -216,17 +207,6 @@ public class PointageController {
     public List<ProblemPointageModel> getAllProblemPointage()
     {
         return problemPointageService.getAllProblemPointage();
-    }
-    @GetMapping("/test")
-    public void test() throws ParseException {
-        ControlModel c=controlService.findd(537);
-        verfierAbsence(c);
-    }
-    @GetMapping("/testt")
-    public void testt() {
-        init();
-        List<Integer> listSeance=seanceService.getSeancesByTime(time);
-        System.out.println(listSeance);
     }
     @GetMapping("/problem/new")
     public Integer getNbNewProblemPointage()

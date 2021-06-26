@@ -116,6 +116,7 @@ public class BpointageApplication implements CommandLineRunner {
             u.setPrenom("admin");
             u.setPassword("12345678");
             u.setRole("ADMIN");
+            u.setFirstLogin(true);
             u.setUserName("admin@gmail.com");
             userService.CreateUser(u);
         }

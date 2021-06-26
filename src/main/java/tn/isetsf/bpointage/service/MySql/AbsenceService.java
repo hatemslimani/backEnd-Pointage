@@ -16,7 +16,8 @@ public class AbsenceService {
     private AbsenceRepository absenceRepository;
     @Autowired
     private EnsiegnantServiceSqlServer ensiegnantServiceSqlServer;
-
+    @Autowired
+    private RattrapageService rattrapageService;
     public List<Date> getDatesAbsences(AnneeUnviModel anneeUnviModel) {
          return absenceRepository.getDatesAbsences(anneeUnviModel.getStart(),anneeUnviModel.getEnd());
     }
@@ -31,7 +32,10 @@ public class AbsenceService {
     }
 
     public List<AbsenceModel> getAbcensesNonVerifier(int idEnseignant) {
-        return absenceRepository.getAbcensesNonVerifier(idEnseignant);
+        Date toDay= new java.sql.Date(new java.util.Date().getTime());
+        List<Integer> listIdPre=rattrapageService.getRattrapageByEnseiByDate(idEnseignant,toDay);
+        listIdPre.add(0);
+        return absenceRepository.getAbcensesNonVerifier(idEnseignant,listIdPre);
     }
     public int getNbAbsenceBydep(int idDep)
     {
@@ -45,6 +49,10 @@ public class AbsenceService {
     }
     public List<AbsenceModel> getAbsenceByIdEnseignant(int year, int semestre, int idEnsei) {
         return absenceRepository.getAbcenseByIdEnseignant(year,semestre,idEnsei);
+
+    }
+    public List<AbsenceModel> getAbsenceByIdEnseignantt(int year, int semestre, int idEnsei,List<Integer> listPre) {
+        return absenceRepository.getAbcenseByIdEnseignantt(year,semestre,idEnsei,listPre);
 
     }
 

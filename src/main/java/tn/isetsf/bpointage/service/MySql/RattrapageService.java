@@ -54,4 +54,12 @@ public class RattrapageService {
     public List<Integer> getSalleRatt(Date dateRatt, int idSeance) {
         return rattrapageRepository.getSalleRatt(dateRatt,idSeance);
     }
+
+    public List<Integer> getRattrapageByEnseiByDate(int idEnseignant, Date toDay) {
+        return rattrapageRepository.getRattrapageByEnseiByDate(idEnseignant,toDay);
+    }
+
+    public List<Integer> getbyDate(Date toDay, int idEnseignant) {
+        return rattrapageRepository.getbyDate( toDay, idEnseignant);
+    }
 }

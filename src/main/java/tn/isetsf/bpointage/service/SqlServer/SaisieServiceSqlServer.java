@@ -18,15 +18,15 @@ public class SaisieServiceSqlServer {
     {
         return  saisieRepositorySqlServer.findAllByEnsiegnant(id);
     }
-    public List<SeanceAbsenceModel> getSeanceAbsence(String nomEnsiegnant, int idGroup,int idJour) {
-        return saisieRepositorySqlServer.findAllSeanceAbsence(nomEnsiegnant,idGroup,idJour);
+    public List<SeanceAbsenceModel> getSeanceAbsence(String nomEnsiegnant, int idGroup,int idJour,int year,int semester) {
+        return saisieRepositorySqlServer.findAllSeanceAbsence(nomEnsiegnant,idGroup,idJour,year,semester);
     }
 
     public List<SalleModel> getFreeSalle(int  idJour, int idSeance) {
         return saisieRepositorySqlServer.findAllFreeSalle(idJour,idSeance);
     }
 
-    public SaisieModelSqlServer verfierSeanceEnsiegnenment(int idSalle, int cod_jour, List<Integer> listSeance,int year,int semestre) {
+    public List<SaisieModelSqlServer> verfierSeanceEnsiegnenment(int idSalle, int cod_jour, List<Integer> listSeance,int year,int semestre) {
         return saisieRepositorySqlServer.verfierSeanceEnsiegnenment(idSalle,cod_jour,listSeance,year,semestre);
     }
     public SaisieModelSqlServer getSeanceById(int id)

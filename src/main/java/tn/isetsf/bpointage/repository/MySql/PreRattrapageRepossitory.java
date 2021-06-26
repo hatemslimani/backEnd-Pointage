@@ -27,4 +27,6 @@ public interface PreRattrapageRepossitory extends JpaRepository<PreRattrapageMod
     List<Integer> getidSeancePreEnseignant(java.sql.Date dateRatt, int idGroup);
     @Query("select p.salle.Id from PreRattrapageModel p where p.dateRatt=:dateRatt and p.Seance.id=:idSeance")
     List<Integer> getSallePre(java.sql.Date dateRatt, int idSeance);
+    @Query("select p from PreRattrapageModel p where p.idSeanceAbsence=:idSeanceAbsence and p.dateAbsence=:dateAbsence")
+    PreRattrapageModel getBySeanceDabsenceByDate(int idSeanceAbsence, java.sql.Date dateAbsence);
 }

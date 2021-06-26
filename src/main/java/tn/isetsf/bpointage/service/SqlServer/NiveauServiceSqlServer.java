@@ -11,9 +11,9 @@ import java.util.List;
 public class NiveauServiceSqlServer {
     @Autowired
     private NiveauRepositorySqlServer niveauRepositorySqlServer;
-    public List<NiveauModelSqlServer> getNiveauByEnsieg(int id)
+    public List<NiveauModelSqlServer> getNiveauByEnsieg(int id,int year,int semestre)
     {
-        return niveauRepositorySqlServer.findNiveauByEnsieg(id);
+        return niveauRepositorySqlServer.findNiveauByEnsieg(id , year , semestre);
     }
 
     public String getByid(int idNiveau) {

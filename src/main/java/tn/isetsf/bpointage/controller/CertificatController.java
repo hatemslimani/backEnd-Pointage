@@ -53,7 +53,7 @@ public class CertificatController {
     public void AddCertificat(@RequestParam("img") MultipartFile file,@RequestParam("certificat") String certi, @AuthenticationPrincipal UserDetails user1) throws IOException {
         CertificatEntity certificat = new ObjectMapper().readValue(certi, CertificatEntity.class);
         if (certificat.getStart() == null || certificat.getEnd() == null || certificat.getIdEnseignant() == 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "tous les informations required ");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "tous les informations sont obligatoires ");
         }
         boolean isExit = new File(context.getRealPath("/Images/")).exists();
         if (!isExit) {
@@ -149,16 +149,16 @@ public class CertificatController {
         CertificatModel certificat=certificatService.getById(idCerti);
         if (certificat==null)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Certificat introuvable");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Justificatif n'existe pas");
         }
         if (certificat.getStatus()==1)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Suppression impossible"+"\n"+"Cértificat est déja validé" );
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Suppression impossible"+"\n"+"Justificatif est déja validé" );
         }
         certificatService.deleteById(idCerti);
         File file = new File(context.getRealPath("/Images/")+certificat.getImg());
         file.delete();
-        throw new ResponseStatusException(HttpStatus.OK,"supprimier avec success" );
+        throw new ResponseStatusException(HttpStatus.OK,"suppression avec success" );
     }
     @GetMapping("/getById/{idCerti}")
     public CertificatEntity getById(@PathVariable int idCerti) throws IOException {
@@ -186,7 +186,7 @@ public class CertificatController {
         CertificatModel certificatModel=certificatService.getById(certificatEntity.getIdCertificat());
         if (certificatModel==null)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Certificat introuvable");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Justificatif n'existe pas");
         }
         certificatModel.setStatus(certificatEntity.getStatus());
         certificatService.save(certificatModel);
@@ -194,7 +194,7 @@ public class CertificatController {
         if (user != null) {
             NotificationModel notificationModel = new NotificationModel();
             notificationModel.setTitle("Administration ISET Sfax");
-            notificationModel.setMsg("Aceeptation Certificat Enseignant "+ensiegnantServiceSqlServer.getByid(certificatModel.getIdEnseignant()));
+            notificationModel.setMsg("Acceptation justificatif, enseignant: "+ensiegnantServiceSqlServer.getByid(certificatModel.getIdEnseignant()));
             notificationModel.setIdReciver(user.getId());
             notificationModel.setVu(true);
             notificationService.save(notificationModel);
@@ -203,13 +203,13 @@ public class CertificatController {
         if (enseignant != null) {
             NotificationModel notificationModel = new NotificationModel();
             notificationModel.setTitle("Administration ISET Sfax");
-            notificationModel.setMsg("Votre Certificat a été accepté");
+            notificationModel.setMsg("Votre justificatif a été accepté");
             notificationModel.setIdReciver(enseignant.getId());
             notificationModel.setVu(true);
             notificationService.save(notificationModel);
         }
         JustifierAbsences(certificatModel.getIdEnseignant(),certificatModel.getStart(),certificatModel.getEnd());
-        throw new ResponseStatusException(HttpStatus.OK,"Certificat accepté" );
+        throw new ResponseStatusException(HttpStatus.OK,"Justificatif accepté" );
     }
     public void JustifierAbsences(int idEnseignant,java.sql.Date dateDebut, java.sql.Date datefin)
     {
@@ -225,7 +225,7 @@ public class CertificatController {
         CertificatModel certificatModel=certificatService.getById(certificatEntity.getIdCertificat());
         if (certificatModel==null)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Certificat introuvable");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Justificatif n'existe pas");
         }
         certificatModel.setStatus(certificatEntity.getStatus());
         certificatService.save(certificatModel);
@@ -233,7 +233,7 @@ public class CertificatController {
         if (user != null ) {
             NotificationModel notificationModel = new NotificationModel();
             notificationModel.setTitle("Administration ISET Sfax");
-            notificationModel.setMsg("Refus Certificat Enseignant "+ensiegnantServiceSqlServer.getByid(certificatModel.getIdEnseignant()));
+            notificationModel.setMsg("Refus justificatif, enseignant: "+ensiegnantServiceSqlServer.getByid(certificatModel.getIdEnseignant()));
             notificationModel.setIdReciver(user.getId());
             notificationModel.setVu(true);
             notificationService.save(notificationModel);
@@ -242,11 +242,11 @@ public class CertificatController {
         if (enseignant != null) {
             NotificationModel notificationModel = new NotificationModel();
             notificationModel.setTitle("Administration ISET Sfax");
-            notificationModel.setMsg("Votre Certificat a été refusé pour certaines contraintes");
+            notificationModel.setMsg("Votre justificatif a été refusé pour certaines contraintes");
             notificationModel.setIdReciver(enseignant.getId());
             notificationModel.setVu(true);
             notificationService.save(notificationModel);
         }
-        throw new ResponseStatusException(HttpStatus.OK,"Certificat refusé" );
+        throw new ResponseStatusException(HttpStatus.OK,"Justificatif refusé" );
     }
 }

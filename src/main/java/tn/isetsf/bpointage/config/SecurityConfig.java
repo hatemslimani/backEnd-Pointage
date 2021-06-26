@@ -33,7 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/departement/**",
             "/block/**",
             "/salle/**",
-
             "/ensiegnement/**",
             "/group/**",
 
@@ -42,7 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
            // "/auth/**", "/user/**",
             //"/departement/**",
             "/salle/**",
-
             "/ensiegnement/**",
             "/group/**",
             "/gestionPre/**",
@@ -78,11 +76,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/user/authenticate","/enseignant/**","/calendar/**","/ensiegnant/**","/pointage/**","/statistic/**","/certificat/**").permitAll().
+        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/user/authenticate","/enseignant/**","/calendar/**","/ensiegnant/**","/statistic/**","/certificat/**").permitAll().
                 antMatchers(endPointAdmin).hasAnyRole("ADMIN").
                 antMatchers(endPointResponsable).hasAnyRole("RESPONSABLE").
                 antMatchers(endPointEnseignant).hasAnyRole("ENSEIGNANT").
-               // antMatchers(endPointController).hasAnyRole("CONTROLLER").
+                antMatchers(endPointController).hasAnyRole("CONTROLLER").
                 antMatchers("/report/**").hasAnyRole("RESPONSABLE","ADMIN").
                 antMatchers("/notification/**").hasAnyRole("RESPONSABLE","ADMIN","ENSEIGNANT").
                 anyRequest().authenticated().
